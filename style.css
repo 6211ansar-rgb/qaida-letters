@@ -497,3 +497,7 @@ body.black-letters .mini-row img { filter: brightness(0); }
 #statSpeed { color: var(--coral-d); }
 #done .done-hero { margin-top: auto; }
 #done .done-actions { margin-bottom: auto; }
+
+/* centre the sound switch in its box */
+.opt-split .opt:last-child { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.opt-split .opt:last-child .switch { align-items: center; }
