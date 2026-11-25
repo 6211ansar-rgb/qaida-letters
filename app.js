@@ -244,7 +244,9 @@
     card.style.setProperty("--card-edge", edge);
     $("retryTag").classList.toggle("hidden", !item.retry);
     $("peekName").textContent = l.name;
-    $("peek").classList.remove("show");
+    $("peekAr").textContent = l.ar || "";
+    $("peek").classList.remove("show", "speaking");
+    try { speechSynthesis.cancel(); } catch {}
     const pct = (pos / queue.length) * 100;
     $("progFill").style.width = pct + "%";
     $("rider").style.left = pct + "%";
@@ -338,10 +340,33 @@
   $("missBtn").onclick = () => answer(false);
   $("lateBtn").onclick = () => answer(false);
   $("prevBtn").onclick = back;
-  $("peek").onclick = () => {
-    const p = $("peek"); p.classList.add("show");
-    clearTimeout(p._t); p._t = setTimeout(() => p.classList.remove("show"), 2000);
-  };
+  // the answer: show the name and say it with the phone's Arabic voice
+  let arVoice = null;
+  function pickVoice() {
+    try {
+      const vs = speechSynthesis.getVoices().filter((v) => /^ar/i.test(v.lang));
+      arVoice = vs.find((v) => /SA|Saudi/i.test(v.lang + v.name)) || vs[0] || null;
+    } catch {}
+  }
+  try { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; } catch {}
+
+  function sayAnswer() {
+    const l = L[queue[pos].i], p = $("peek");
+    p.classList.add("show");
+    clearTimeout(p._t); p._t = setTimeout(() => p.classList.remove("show", "speaking"), 3500);
+    try {
+      speechSynthesis.cancel();
+      if (!arVoice) pickVoice();
+      // Arabic voice says the Arabic name; a phone without one says "Kaaf" etc. in English
+      const u = new SpeechSynthesisUtterance(arVoice ? l.ar : l.name);
+      if (arVoice) { u.voice = arVoice; u.lang = arVoice.lang; }
+      u.rate = 0.75;
+      u.onstart = () => p.classList.add("speaking");
+      u.onend = u.onerror = () => p.classList.remove("speaking");
+      speechSynthesis.speak(u);
+    } catch {}
+  }
+  $("peek").onclick = sayAnswer;
   $("drillQuit").onclick = () => { clearTimeout(timerId); $("quitModal").classList.remove("hidden"); mood("quitMascot", "think"); };
   $("quitNo").onclick = () => { $("quitModal").classList.add("hidden"); startTimer(); };
   $("quitYes").onclick = () => { $("quitModal").classList.add("hidden"); show("home"); };
