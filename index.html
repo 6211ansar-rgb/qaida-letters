@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Qaida Letters</title>
+  <meta name="description" content="Shuffle the Noorani Qaida letters one at a time for daily revision.">
+  <meta name="theme-color" content="#ffc947">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="icon" href="icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- HOME -->
+  <section id="home" class="screen active">
+    <div class="home-top">
+      <div class="bubbles" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+      <h1>Alif&nbsp;Ba&nbsp;Ta</h1>
+      <p class="sub">One letter at a time, all mixed up!</p>
+    </div>
+
+    <div class="home-actions">
+      <button class="big-btn go" id="startAll">
+        <span class="emoji">🔀</span>
+        <span><b>Start</b><small id="startAllSub">All 30 letters, shuffled</small></span>
+      </button>
+
+      <button class="big-btn pick" id="openPicker">
+        <span class="emoji">👆</span>
+        <span><b>Choose letters</b><small id="pickSub">Pick just the ones you want</small></span>
+      </button>
+
+      <button class="big-btn redo hidden" id="redoMissed">
+        <span class="emoji">🔁</span>
+        <span><b>Practise the tricky ones</b><small id="redoSub"></small></span>
+      </button>
+    </div>
+
+    <div class="settings">
+      <div class="setting">
+        <span class="label">⏱ Speed mode</span>
+        <div class="seg" id="speedSeg" role="radiogroup" aria-label="Speed mode">
+          <button data-v="0" class="on">Off</button>
+          <button data-v="3">3s</button>
+          <button data-v="5">5s</button>
+          <button data-v="8">8s</button>
+        </div>
+      </div>
+      <div class="setting">
+        <span class="label">🎨 Letter colour</span>
+        <div class="seg" id="colorSeg" role="radiogroup" aria-label="Letter colour">
+          <button data-v="color" class="on">Colours</button>
+          <button data-v="black">Black</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PICKER -->
+  <section id="picker" class="screen">
+    <header class="bar">
+      <button class="icon-btn" id="pickerBack" aria-label="Back">←</button>
+      <h2>Choose letters</h2>
+      <button class="icon-btn" id="pickerHelp" aria-label="Show how">?</button>
+    </header>
+    <p class="hint">Tap a letter, or <b>slide your finger</b> across a row to pick lots at once.</p>
+    <div class="grid-wrap">
+      <div class="pick-grid" id="pickGrid"></div>
+      <div class="ghost" id="ghost" aria-hidden="true">
+        <div class="ghost-hand">👆</div>
+      </div>
+    </div>
+    <div class="pick-tools">
+      <button class="chip" id="pickAll">Select all</button>
+      <button class="chip" id="pickNone">Clear</button>
+    </div>
+    <footer class="pick-foot">
+      <button class="big-btn go wide" id="pickStart" disabled>
+        <span><b id="pickStartLabel">Pick some letters</b></span>
+      </button>
+    </footer>
+  </section>
+
+  <!-- DRILL -->
+  <section id="drill" class="screen">
+    <header class="bar">
+      <button class="icon-btn" id="drillQuit" aria-label="Stop">✕</button>
+      <div class="progress"><div class="progress-fill" id="progFill"></div></div>
+      <span class="count" id="progCount">1/30</span>
+    </header>
+
+    <div class="card-area">
+      <div class="card" id="card">
+        <img id="cardImg" alt="" draggable="false">
+        <div class="retry-tag hidden" id="retryTag">Try again!</div>
+        <div class="timer hidden" id="timer"><div class="timer-fill" id="timerFill"></div></div>
+      </div>
+      <button class="peek" id="peek" aria-label="Show the letter name">👁 <span id="peekName">name</span></button>
+    </div>
+
+    <footer class="drill-foot">
+      <button class="nav-btn back" id="prevBtn" aria-label="Previous letter">↩</button>
+      <button class="nav-btn miss" id="missBtn"><span class="emoji">🤔</span>Didn't know</button>
+      <button class="nav-btn got" id="gotBtn"><span class="emoji">⭐</span>Knew it!</button>
+    </footer>
+  </section>
+
+  <!-- DONE -->
+  <section id="done" class="screen">
+    <div class="done-top">
+      <div class="stars" id="stars"></div>
+      <h1 id="doneTitle">MashaAllah!</h1>
+      <p class="sub" id="doneSub"></p>
+    </div>
+    <div class="missed-box hidden" id="missedBox">
+      <h3>Letters to practise</h3>
+      <div class="missed-grid" id="missedGrid"></div>
+    </div>
+    <div class="done-actions">
+      <button class="big-btn redo" id="doneRedo">
+        <span class="emoji">🔁</span>
+        <span><b>Test just these again</b><small id="doneRedoSub"></small></span>
+      </button>
+      <button class="big-btn go" id="doneAgain">
+        <span class="emoji">🔀</span>
+        <span><b>Shuffle again</b><small>Same letters, new order</small></span>
+      </button>
+      <button class="link-btn" id="doneHome">Back to start</button>
+    </div>
+    <canvas id="confetti" aria-hidden="true"></canvas>
+  </section>
+
+  <!-- CONFIRM -->
+  <div class="modal hidden" id="quitModal" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <p>Stop this round?</p>
+      <div class="modal-actions">
+        <button class="chip" id="quitNo">Keep going</button>
+        <button class="chip danger" id="quitYes">Stop</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="pages.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
