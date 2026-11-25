@@ -38,7 +38,7 @@
       <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13.2 2.8L5 13.6h6.2L10.6 21.2l8.4-11h-6.4z"/></symbol>
       <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><circle cx="12" cy="12" r="4.6"/><circle cx="12" cy="12" r="1" class="dot"/></symbol>
       <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 21.2c3.9 0 6.6-2.7 6.6-6.4 0-4.4-3.6-6.6-4.3-11-2.4 1.6-3.7 4-3.6 6.6-1.1-.7-1.7-1.9-1.8-3.2C7 8.9 5.4 11.4 5.4 14.8c0 3.7 2.7 6.4 6.6 6.4z"/></symbol>
-      <symbol id="i-star" viewBox="0 0 24 24"><path class="fill" d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z"/></symbol>
+      <symbol id="i-star" viewBox="0 0 24 24"><path class="fill" fill="currentColor" d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z"/></symbol>
       <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/></symbol>
       <symbol id="i-erase" viewBox="0 0 24 24"><path d="M4 7h16M9.5 7V4.8h5V7M6.5 7l.9 12.2a1.6 1.6 0 0 0 1.6 1.5h6a1.6 1.6 0 0 0 1.6-1.5L17.5 7"/></symbol>
     </defs>
@@ -48,12 +48,8 @@
   <section id="home" class="screen active">
     <div class="home-hero">
       <div class="mascot-slot" data-size="lg" id="homeMascot"></div>
-      <div class="speech" id="homeSpeech">Assalamu alaikum!</div>
       <h1 class="title">Alif Ba Ta</h1>
-      <p class="sub">Every letter on its own, all mixed up</p>
     </div>
-
-    <div class="week" id="week" aria-label="Practice this week"></div>
 
     <div class="home-actions">
       <button class="big-btn green" id="startAll">
@@ -68,33 +64,30 @@
         <span class="btn-go"><svg><use href="#i-left"/></svg></span>
       </button>
 
-      <button class="big-btn coral hidden" id="redoTricky">
-        <span class="btn-icon"><svg><use href="#i-repeat"/></svg></span>
-        <span class="btn-text"><b>Tricky ones</b><span class="mini-row" id="trickyThumbs"></span></span>
-        <span class="btn-go"><svg><use href="#i-left"/></svg></span>
-      </button>
     </div>
 
-    <div class="settings">
-      <div class="setting">
-        <span class="set-icon sun"><svg><use href="#i-timer"/></svg></span>
-        <span class="label">Timer</span>
-        <div class="seg" id="speedSeg" role="radiogroup" aria-label="Speed timer">
-          <button data-v="0">Off</button><button data-v="3">3s</button><button data-v="5">5s</button><button data-v="8">8s</button>
+    <div class="settings panel">
+      <div class="opt">
+        <div class="opt-head">
+          <h3><span id="timerName">Zaid</span>'s time</h3>
+          <p class="opt-note" id="timerHelp"></p>
         </div>
+        <div class="dials" id="speedSeg" role="radiogroup" aria-label="Time to answer each letter"></div>
       </div>
-      <div class="setting">
-        <span class="set-icon plum"><svg><use href="#i-palette"/></svg></span>
-        <span class="label">Letters</span>
-        <div class="seg" id="colorSeg" role="radiogroup" aria-label="Letter colour">
-          <button data-v="color"><i class="swatch rainbow"></i>Colour</button><button data-v="black"><i class="swatch ink"></i>Black</button>
+      <div class="opt-split">
+        <div class="opt">
+          <h3>Letters</h3>
+          <div class="looks" id="colorSeg" role="radiogroup" aria-label="Letter colour">
+            <button data-v="color"><span class="look"><img src="letters/03.svg" alt=""></span><b>Colour</b></button>
+            <button data-v="black"><span class="look ink"><img src="letters/03.svg" alt=""></span><b>Black</b></button>
+          </div>
         </div>
-      </div>
-      <div class="setting">
-        <span class="set-icon blue"><svg><use href="#i-sound"/></svg></span>
-        <span class="label">Sounds</span>
-        <div class="seg" id="soundSeg" role="radiogroup" aria-label="Sounds">
-          <button data-v="on">On</button><button data-v="off">Off</button>
+        <div class="opt">
+          <h3>Sounds</h3>
+          <button class="switch" id="soundSwitch" role="switch" aria-checked="true" aria-label="Sounds">
+            <span class="switch-track"><span class="switch-knob"></span></span>
+            <b id="soundLabel">On</b>
+          </button>
         </div>
       </div>
     </div>
@@ -146,6 +139,7 @@
           <div class="card-inner">
             <img id="cardImg" alt="" draggable="false">
           </div>
+          <div class="late-tag hidden" id="lateTag"><svg><use href="#i-timer"/></svg>Time's up</div>
           <div class="retry-tag hidden" id="retryTag"><svg><use href="#i-again"/></svg>Again</div>
           <div class="timer hidden" id="timer"><div class="timer-fill" id="timerFill"></div></div>
         </div>
@@ -158,6 +152,7 @@
         <button class="nav-btn back" id="prevBtn" aria-label="Previous letter"><svg><use href="#i-undo"/></svg></button>
         <button class="nav-btn coral" id="missBtn"><svg><use href="#i-again"/></svg><span>Not yet</span></button>
         <button class="nav-btn green" id="gotBtn"><svg><use href="#i-check"/></svg><span>Got it!</span></button>
+        <button class="nav-btn coral late-btn hidden" id="lateBtn"><svg><use href="#i-timer"/></svg><span>Time's up · Next</span></button>
       </footer>
     </div>
   </section>
@@ -170,8 +165,8 @@
       <h1 class="title" id="doneTitle">MashaAllah!</h1>
     </div>
     <div class="stats">
-      <div class="stat"><span class="set-icon green"><svg><use href="#i-target"/></svg></span><div><b id="statFirst">0/0</b><small>first try</small></div></div>
-      <div class="stat"><span class="set-icon sun"><svg><use href="#i-bolt"/></svg></span><div><b id="statSpeed">0s</b><small>per letter</small></div></div>
+      <div class="stat"><div><b id="statFirst">0/0</b><small>first try</small></div></div>
+      <div class="stat"><div><b id="statSpeed">0s</b><small>per letter</small></div></div>
     </div>
     <div class="practice hidden" id="practiceBox">
       <h3>Let's practise these</h3>

@@ -15,6 +15,7 @@
     color: store.get("color", "color"),
     sound: store.get("sound", "on")
   };
+  const STUDENT = "Zaid";
   let picked = new Set(store.get("picked", []));
   let lastSet = [];
 
@@ -99,45 +100,18 @@
     return a;
   }
 
-  // ---------- practice days ----------
-  const dayKey = (d) => `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
-  function streakInfo() {
-    const days = new Set(store.get("days", []));
-    const today = new Date(); today.setHours(0, 0, 0, 0);
-    let streak = 0; const d = new Date(today);
-    if (!days.has(dayKey(d))) d.setDate(d.getDate() - 1);
-    while (days.has(dayKey(d))) { streak++; d.setDate(d.getDate() - 1); }
-    return { days, today, streak };
-  }
-  function renderWeek() {
-    const { days, today, streak } = streakInfo();
-    const monday = new Date(today); monday.setDate(today.getDate() - ((today.getDay() + 6) % 7));
-    const labels = ["M", "T", "W", "T", "F", "S", "S"];
-    let html = `<div class="days">`;
-    for (let k = 0; k < 7; k++) {
-      const d = new Date(monday); d.setDate(monday.getDate() + k);
-      const done = days.has(dayKey(d)), isToday = +d === +today;
-      html += `<div class="day${done ? " done" : ""}${isToday ? " today" : ""}"><i>${done ? `<svg><use href="#i-star"/></svg>` : ""}</i>${labels[k]}</div>`;
-    }
-    html += `</div><div class="streak${streak ? "" : " zero"}"><svg><use href="#i-flame"/></svg>${streak ? plural(streak, "day") : "Start today"}</div>`;
-    $("week").innerHTML = html;
-  }
 
   // ---------- home ----------
   $("startAllSub").textContent = `All ${L.length} letters, shuffled`;
 
   function refreshHome() {
-    renderWeek();
-    const tricky = store.get("tricky", []);
-    $("redoTricky").classList.toggle("hidden", tricky.length === 0);
-    const shown = tricky.slice(0, 5);
-    $("trickyThumbs").innerHTML = shown.map((t) => `<i><img src="${L[t.i].img}" alt=""></i>`).join("") +
-      (tricky.length > shown.length ? `<em>+${tricky.length - shown.length}</em>` : "");
-    $("pickSub").textContent = picked.size ? `${plural(picked.size, "letter")} picked last time` : "Pick just the ones you want";
-    const hour = new Date().getHours();
-    $("homeSpeech").textContent = streakInfo().streak >= 2 ? "Keep the streak going!" : hour < 12 ? "Good morning!" : "Assalamu alaikum!";
-    const sp = $("homeSpeech"); sp.style.animation = "none"; void sp.offsetWidth; sp.style.animation = "";
     mood("homeMascot", "idle");
+  }
+
+  function renderTimerHelp() {
+    $("timerHelp").innerHTML = settings.speed
+      ? `${STUDENT} gets <b>${settings.speed} seconds</b> to say each letter. If time runs out, it counts as a mistake.`
+      : `How long ${STUDENT} gets to say each letter before it counts as a mistake.`;
   }
 
   function segInit(segId, key, apply) {
@@ -153,13 +127,28 @@
     });
     setOn(); apply && apply();
   }
-  segInit("speedSeg", "speed");
+  // clock dials: the arc shows the share of 8 seconds
+  $("timerName").textContent = STUDENT;
+  $("speedSeg").innerHTML = [0, 3, 5, 8].map((v) => `
+    <button class="dial" data-v="${v}" aria-label="${v ? v + " seconds" : "No time limit"}">
+      <svg viewBox="0 0 44 44">
+        <circle class="face" cx="22" cy="22" r="19"/>
+        ${v ? `<circle class="arc" cx="22" cy="22" r="14" pathLength="100" stroke-dasharray="${(v / 8) * 100 - 0.01} 100"/>
+               <text class="num" x="22" y="27.5" text-anchor="middle">${v}</text>`
+            : `<line class="slash" x1="15" y1="29" x2="29" y2="15"/>`}
+      </svg>
+      <b>${v ? v + " sec" : "No limit"}</b>
+    </button>`).join("");
+  segInit("speedSeg", "speed", renderTimerHelp);
+
+  const sw = $("soundSwitch");
+  const paintSound = () => { const on = settings.sound === "on"; sw.setAttribute("aria-checked", on); $("soundLabel").textContent = on ? "On" : "Off"; };
+  sw.onclick = () => { settings.sound = settings.sound === "on" ? "off" : "on"; store.set("sound", settings.sound); paintSound(); sfx.tap(); };
+  paintSound();
   segInit("colorSeg", "color", () => document.body.classList.toggle("black-letters", settings.color === "black"));
-  segInit("soundSeg", "sound");
 
   $("startAll").onclick = () => startRound(L.map((_, i) => i));
   $("openPicker").onclick = openPicker;
-  $("redoTricky").onclick = () => startRound(store.get("tricky", []).map((t) => t.i));
 
   // ---------- picker ----------
   const grid = $("pickGrid");
@@ -221,8 +210,8 @@
   grid.addEventListener("pointerup", endDrag);
   grid.addEventListener("pointercancel", endDrag);
 
-  $("pickAll").onclick = () => { stopGhost(); L.forEach((_, i) => picked.add(i)); store.set("picked", [...picked]); paintPicks(); sfx.tap(); };
-  $("pickNone").onclick = () => { picked.clear(); store.set("picked", []); paintPicks(); sfx.tap(); };
+  $("pickAll").onclick = () => { stopGhost(); L.forEach((_, i) => picked.add(i)); store.set("picked", [...picked]); paintPicks(); };
+  $("pickNone").onclick = () => { picked.clear(); store.set("picked", []); paintPicks(); };
   $("pickerBack").onclick = () => show("home");
   $("pickerHelp").onclick = playGhost;
   $("pickStart").onclick = () => startRound([...picked].sort((a, b) => a - b));
@@ -232,13 +221,13 @@
     ["#fff1f0", "#f6d3cf"], ["#fff7d9", "#f1e2a6"], ["#e9faf1", "#c4ecd7"], ["#eaf4ff", "#c9def8"],
     ["#f2edff", "#d9cff8"], ["#fff0f7", "#f5cfe2"], ["#e8fbfd", "#c3eaef"], ["#fff3e6", "#f4d9bb"]
   ];
-  let queue, pos, history, missed, firstTry, times, timerId, colorStart, shownAt;
+  let queue, pos, history, missed, lateSet, firstTry, times, timerId, colorStart, shownAt, timedOut = false;
 
   function startRound(indices) {
     if (!indices.length) return;
     lastSet = indices.slice();
     queue = shuffle(indices).map((i) => ({ i, retry: false }));
-    pos = 0; history = []; missed = new Set(); firstTry = new Map(); times = new Map();
+    pos = 0; history = []; missed = new Set(); lateSet = new Set(); firstTry = new Map(); times = new Map();
     colorStart = Math.floor(Math.random() * CARDS.length);
     show("drill");
     keepAwake();
@@ -263,6 +252,7 @@
     $("prevBtn").disabled = pos === 0;
     mood("riderMascot", item.retry ? "think" : "idle");
     card.className = "card";
+    setTimedOut(false);
     if (animate) { void card.offsetWidth; card.classList.add("pop"); }
     shownAt = performance.now();
     startTimer();
@@ -276,7 +266,14 @@
     tm.classList.remove("hidden");
     fill.style.setProperty("--t", settings.speed + "s");
     void fill.offsetWidth; fill.classList.add("run");
-    timerId = setTimeout(() => { $("card").classList.add("late"); mood("riderMascot", "think"); }, settings.speed * 1000);
+    timerId = setTimeout(() => { setTimedOut(true); sfx.miss(); $("card").classList.add("late"); mood("riderMascot", "think"); buzz([10, 50, 10]); }, settings.speed * 1000);
+  }
+
+  function setTimedOut(on) {
+    timedOut = on;
+    $("lateTag").classList.toggle("hidden", !on);
+    $("card").classList.toggle("timed-out", on);
+    document.querySelector(".drill-foot").classList.toggle("late", on);
   }
 
   function burst(fromEl) {
@@ -294,11 +291,14 @@
 
   let busy = false;
   function answer(knew) {
-    if (busy) return; busy = true;
+    if (busy || !queue || pos >= queue.length) return; busy = true;
     clearTimeout(timerId);
+    if (timedOut) knew = false;          // too slow = a mistake, whatever was pressed
+    const wasLate = timedOut;
     const item = queue[pos];
     const dt = Math.min(30000, performance.now() - shownAt);
-    const rec = { pos, i: item.i, knew, inserted: null, wasNewMiss: false, firstSet: false };
+    const rec = { pos, i: item.i, knew, inserted: null, wasNewMiss: false, wasNewLate: false, firstSet: false };
+    if (wasLate && !missed.has(item.i) && !lateSet.has(item.i)) { lateSet.add(item.i); rec.wasNewLate = true; }
     if (!firstTry.has(item.i)) { firstTry.set(item.i, knew); times.set(item.i, dt); rec.firstSet = true; }
     if (!knew) {
       if (!missed.has(item.i)) { missed.add(item.i); rec.wasNewMiss = true; }
@@ -328,14 +328,15 @@
     const rec = history.pop();
     if (rec.inserted != null) queue.splice(rec.inserted, 1);
     if (rec.wasNewMiss) missed.delete(rec.i);
+    if (rec.wasNewLate) lateSet.delete(rec.i);
     if (rec.firstSet) { firstTry.delete(rec.i); times.delete(rec.i); }
     pos = rec.pos;
-    sfx.tap();
     render(true);
   }
 
   $("gotBtn").onclick = () => answer(true);
   $("missBtn").onclick = () => answer(false);
+  $("lateBtn").onclick = () => answer(false);
   $("prevBtn").onclick = back;
   $("peek").onclick = () => {
     const p = $("peek"); p.classList.add("show");
@@ -362,15 +363,13 @@
     const known = [...times].filter(([i]) => firstTry.get(i)).map(([, t]) => t).sort((a, b) => a - b);
     const median = known.length ? known[Math.floor(known.length / 2)] : 0;
     const slowCut = Math.max(4000, median * 1.8);
-    const slow = known.length >= 4 ? [...times].filter(([i, t]) => firstTry.get(i) && t > slowCut).map(([i]) => i) : [];
+    const slow = !settings.speed && known.length >= 4 ? [...times].filter(([i, t]) => firstTry.get(i) && t > slowCut).map(([i]) => i) : [];
     const avg = known.length ? known.reduce((a, b) => a + b, 0) / known.length / 1000 : 0;
 
-    const tricky = [...[...missed].map((i) => ({ i, why: "miss" })), ...slow.map((i) => ({ i, why: "slow" }))]
+    const tricky = [...[...missed].map((i) => ({ i, why: lateSet.has(i) ? "late" : "miss" })), ...slow.map((i) => ({ i, why: "slow" }))]
       .sort((a, b) => a.i - b.i);
     store.set("tricky", tricky);
 
-    const days = new Set(store.get("days", [])); days.add(dayKey(new Date()));
-    store.set("days", [...days].slice(-60));
 
     const ratio = total ? knewFirst / total : 1;
     const starCount = ratio === 1 ? 3 : ratio >= 0.75 ? 2 : 1;
@@ -382,7 +381,7 @@
 
     $("practiceBox").classList.toggle("hidden", tricky.length === 0);
     $("practiceGrid").innerHTML = tricky.map((t) =>
-      `<div class="p-item"><div class="p-img"><img src="${L[t.i].img}" alt="${L[t.i].name}"></div><span class="p-tag ${t.why}">${t.why === "miss" ? "Not yet" : "Slow"}</span></div>`).join("");
+      `<div class="p-item"><div class="p-img"><img src="${L[t.i].img}" alt="${L[t.i].name}"></div><span class="p-tag ${t.why}">${{ miss: "Not yet", late: "Too slow", slow: "Slow" }[t.why]}</span></div>`).join("");
     $("doneRedo").classList.toggle("hidden", tricky.length === 0);
     $("doneRedoSub").textContent = `Only the ${plural(tricky.length, "tricky letter")}`;
 
