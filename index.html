@@ -5,58 +5,96 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Qaida Letters</title>
   <meta name="description" content="Shuffle the Noorani Qaida letters one at a time for daily revision.">
-  <meta name="theme-color" content="#ffc947">
+  <meta name="theme-color" content="#fff8ec">
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="icon" href="icon-192.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Qaida">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+  <!-- Icon set: one consistent hand-drawn style, 24px grid, rounded strokes -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="i-shuffle" viewBox="0 0 24 24"><path d="M3 7h3.2c2 0 3.2.9 4.3 2.7l2.6 4.5C14.2 16 15.5 17 17.5 17H21M3 17h3.2c1 0 1.9-.3 2.6-.8M15.2 7.8c.7-.5 1.5-.8 2.5-.8H21M18 4l3 3-3 3M18 14l3 3-3 3"/></symbol>
+      <symbol id="i-hand" viewBox="0 0 24 24"><path d="M9 11.5V5a1.6 1.6 0 0 1 3.2 0v5.5m0-1.2a1.6 1.6 0 0 1 3.2 0v1.6m0-.6a1.6 1.6 0 0 1 3.2 0v3.9A6.8 6.8 0 0 1 11.8 21h-.6a5.6 5.6 0 0 1-4.4-2.2l-2.6-3.4a1.7 1.7 0 0 1 2.6-2.2L9 15"/></symbol>
+      <symbol id="i-repeat" viewBox="0 0 24 24"><path d="M17 3l3 3-3 3M4 12v-1.5A4.5 4.5 0 0 1 8.5 6H20M7 21l-3-3 3-3M20 12v1.5a4.5 4.5 0 0 1-4.5 4.5H4"/></symbol>
+      <symbol id="i-timer" viewBox="0 0 24 24"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 10v3.7l2.4 1.6M9.5 2.8h5M19 6.2l1.3-1.3"/></symbol>
+      <symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 3.2a8.8 8.8 0 1 0 0 17.6c1.2 0 1.8-.8 1.8-1.7 0-.5-.2-.9-.5-1.2a1.7 1.7 0 0 1 1.2-2.9h2a4.8 4.8 0 0 0 4.8-4.8c0-3.9-4-7-9.3-7z"/><circle cx="7.6" cy="11.2" r="1.2" class="dot"/><circle cx="10.4" cy="7.4" r="1.2" class="dot"/><circle cx="15" cy="7.6" r="1.2" class="dot"/></symbol>
+      <symbol id="i-sound" viewBox="0 0 24 24"><path d="M4 9.5h3.2L12 5.6v12.8l-4.8-3.9H4z"/><path d="M15.8 9.2a4 4 0 0 1 0 5.6M18.4 6.6a7.6 7.6 0 0 1 0 10.8"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.8l4.4 4.4L19.2 7.4"/></symbol>
+      <symbol id="i-again" viewBox="0 0 24 24"><path d="M19.6 13.5a7.8 7.8 0 1 1-2.3-6.9M19.5 3.5v4.4h-4.4"/></symbol>
+      <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 14.5L4 9.5l5-5M4.5 9.5h10a5.5 5.5 0 0 1 0 11H11"/></symbol>
+      <symbol id="i-close" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></symbol>
+      <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.8"/></symbol>
+      <symbol id="i-left" viewBox="0 0 24 24"><path d="M14.5 5.5L8 12l6.5 6.5"/></symbol>
+      <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.8"/><path d="M9.6 9.6a2.5 2.5 0 1 1 3.6 2.2c-.7.4-1.2 1-1.2 1.8v.5"/><circle cx="12" cy="17" r=".6" class="dot"/></symbol>
+      <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13.2 2.8L5 13.6h6.2L10.6 21.2l8.4-11h-6.4z"/></symbol>
+      <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><circle cx="12" cy="12" r="4.6"/><circle cx="12" cy="12" r="1" class="dot"/></symbol>
+      <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 21.2c3.9 0 6.6-2.7 6.6-6.4 0-4.4-3.6-6.6-4.3-11-2.4 1.6-3.7 4-3.6 6.6-1.1-.7-1.7-1.9-1.8-3.2C7 8.9 5.4 11.4 5.4 14.8c0 3.7 2.7 6.4 6.6 6.4z"/></symbol>
+      <symbol id="i-star" viewBox="0 0 24 24"><path class="fill" d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z"/></symbol>
+      <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/></symbol>
+      <symbol id="i-erase" viewBox="0 0 24 24"><path d="M4 7h16M9.5 7V4.8h5V7M6.5 7l.9 12.2a1.6 1.6 0 0 0 1.6 1.5h6a1.6 1.6 0 0 0 1.6-1.5L17.5 7"/></symbol>
+    </defs>
+  </svg>
+
   <!-- HOME -->
   <section id="home" class="screen active">
-    <div class="home-top">
-      <div class="bubbles" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
-      <h1>Alif&nbsp;Ba&nbsp;Ta</h1>
-      <p class="sub">One letter at a time, all mixed up!</p>
+    <div class="home-hero">
+      <div class="mascot-slot" data-size="lg" id="homeMascot"></div>
+      <div class="speech" id="homeSpeech">Assalamu alaikum!</div>
+      <h1 class="title">Alif Ba Ta</h1>
+      <p class="sub">Every letter on its own, all mixed up</p>
     </div>
 
+    <div class="week" id="week" aria-label="Practice this week"></div>
+
     <div class="home-actions">
-      <button class="big-btn go" id="startAll">
-        <span class="emoji">🔀</span>
-        <span><b>Start</b><small id="startAllSub">All 30 letters, shuffled</small></span>
+      <button class="big-btn green" id="startAll">
+        <span class="btn-icon"><svg><use href="#i-shuffle"/></svg></span>
+        <span class="btn-text"><b>Start</b><small id="startAllSub">All 30 letters, shuffled</small></span>
+        <span class="btn-go"><svg><use href="#i-left"/></svg></span>
       </button>
 
-      <button class="big-btn pick" id="openPicker">
-        <span class="emoji">👆</span>
-        <span><b>Choose letters</b><small id="pickSub">Pick just the ones you want</small></span>
+      <button class="big-btn blue" id="openPicker">
+        <span class="btn-icon"><svg><use href="#i-hand"/></svg></span>
+        <span class="btn-text"><b>Choose letters</b><small id="pickSub">Pick just the ones you want</small></span>
+        <span class="btn-go"><svg><use href="#i-left"/></svg></span>
       </button>
 
-      <button class="big-btn redo hidden" id="redoMissed">
-        <span class="emoji">🔁</span>
-        <span><b>Practise the tricky ones</b><small id="redoSub"></small></span>
+      <button class="big-btn coral hidden" id="redoTricky">
+        <span class="btn-icon"><svg><use href="#i-repeat"/></svg></span>
+        <span class="btn-text"><b>Tricky ones</b><span class="mini-row" id="trickyThumbs"></span></span>
+        <span class="btn-go"><svg><use href="#i-left"/></svg></span>
       </button>
     </div>
 
     <div class="settings">
       <div class="setting">
-        <span class="label">⏱ Speed mode</span>
-        <div class="seg" id="speedSeg" role="radiogroup" aria-label="Speed mode">
-          <button data-v="0" class="on">Off</button>
-          <button data-v="3">3s</button>
-          <button data-v="5">5s</button>
-          <button data-v="8">8s</button>
+        <span class="set-icon sun"><svg><use href="#i-timer"/></svg></span>
+        <span class="label">Timer</span>
+        <div class="seg" id="speedSeg" role="radiogroup" aria-label="Speed timer">
+          <button data-v="0">Off</button><button data-v="3">3s</button><button data-v="5">5s</button><button data-v="8">8s</button>
         </div>
       </div>
       <div class="setting">
-        <span class="label">🎨 Letter colour</span>
+        <span class="set-icon plum"><svg><use href="#i-palette"/></svg></span>
+        <span class="label">Letters</span>
         <div class="seg" id="colorSeg" role="radiogroup" aria-label="Letter colour">
-          <button data-v="color" class="on">Colours</button>
-          <button data-v="black">Black</button>
+          <button data-v="color"><i class="swatch rainbow"></i>Colour</button><button data-v="black"><i class="swatch ink"></i>Black</button>
+        </div>
+      </div>
+      <div class="setting">
+        <span class="set-icon blue"><svg><use href="#i-sound"/></svg></span>
+        <span class="label">Sounds</span>
+        <div class="seg" id="soundSeg" role="radiogroup" aria-label="Sounds">
+          <button data-v="on">On</button><button data-v="off">Off</button>
         </div>
       </div>
     </div>
@@ -65,24 +103,28 @@
   <!-- PICKER -->
   <section id="picker" class="screen">
     <header class="bar">
-      <button class="icon-btn" id="pickerBack" aria-label="Back">←</button>
+      <button class="icon-btn" id="pickerBack" aria-label="Back"><svg><use href="#i-left"/></svg></button>
       <h2>Choose letters</h2>
-      <button class="icon-btn" id="pickerHelp" aria-label="Show how">?</button>
+      <button class="icon-btn" id="pickerHelp" aria-label="Show me how"><svg><use href="#i-help"/></svg></button>
     </header>
-    <p class="hint">Tap a letter, or <b>slide your finger</b> across a row to pick lots at once.</p>
+    <p class="hint">Tap a letter, or <b>slide your finger</b> along a row to pick lots at once</p>
     <div class="grid-wrap">
       <div class="pick-grid" id="pickGrid"></div>
       <div class="ghost" id="ghost" aria-hidden="true">
-        <div class="ghost-hand">👆</div>
+        <div class="ghost-trail"></div>
+        <div class="ghost-hand">
+          <svg viewBox="0 0 24 24"><use href="#i-hand"/></svg>
+          <span class="ghost-ripple"></span>
+        </div>
       </div>
     </div>
     <div class="pick-tools">
-      <button class="chip" id="pickAll">Select all</button>
-      <button class="chip" id="pickNone">Clear</button>
+      <button class="chip" id="pickAll"><svg><use href="#i-grid"/></svg>Select all</button>
+      <button class="chip" id="pickNone"><svg><use href="#i-erase"/></svg>Clear</button>
     </div>
     <footer class="pick-foot">
-      <button class="big-btn go wide" id="pickStart" disabled>
-        <span><b id="pickStartLabel">Pick some letters</b></span>
+      <button class="big-btn green center" id="pickStart" disabled>
+        <span class="btn-text"><b id="pickStartLabel">Pick some letters</b></span>
       </button>
     </footer>
   </section>
@@ -90,59 +132,75 @@
   <!-- DRILL -->
   <section id="drill" class="screen">
     <header class="bar">
-      <button class="icon-btn" id="drillQuit" aria-label="Stop">✕</button>
-      <div class="progress"><div class="progress-fill" id="progFill"></div></div>
+      <button class="icon-btn" id="drillQuit" aria-label="Stop"><svg><use href="#i-close"/></svg></button>
+      <div class="track">
+        <div class="track-fill" id="progFill"></div>
+        <div class="rider" id="rider"><div class="mascot-slot" data-size="xs" id="riderMascot"></div></div>
+      </div>
       <span class="count" id="progCount">1/30</span>
     </header>
 
-    <div class="card-area">
-      <div class="card" id="card">
-        <img id="cardImg" alt="" draggable="false">
-        <div class="retry-tag hidden" id="retryTag">Try again!</div>
-        <div class="timer hidden" id="timer"><div class="timer-fill" id="timerFill"></div></div>
+    <div class="stage">
+      <div class="card-area">
+        <div class="card" id="card">
+          <div class="card-inner">
+            <img id="cardImg" alt="" draggable="false">
+          </div>
+          <div class="retry-tag hidden" id="retryTag"><svg><use href="#i-again"/></svg>Again</div>
+          <div class="timer hidden" id="timer"><div class="timer-fill" id="timerFill"></div></div>
+        </div>
+        <button class="peek" id="peek" aria-label="Show the letter name">
+          <svg><use href="#i-eye"/></svg><span id="peekName">name</span>
+        </button>
       </div>
-      <button class="peek" id="peek" aria-label="Show the letter name">👁 <span id="peekName">name</span></button>
-    </div>
 
-    <footer class="drill-foot">
-      <button class="nav-btn back" id="prevBtn" aria-label="Previous letter">↩</button>
-      <button class="nav-btn miss" id="missBtn"><span class="emoji">🤔</span>Didn't know</button>
-      <button class="nav-btn got" id="gotBtn"><span class="emoji">⭐</span>Knew it!</button>
-    </footer>
+      <footer class="drill-foot">
+        <button class="nav-btn back" id="prevBtn" aria-label="Previous letter"><svg><use href="#i-undo"/></svg></button>
+        <button class="nav-btn coral" id="missBtn"><svg><use href="#i-again"/></svg><span>Not yet</span></button>
+        <button class="nav-btn green" id="gotBtn"><svg><use href="#i-check"/></svg><span>Got it!</span></button>
+      </footer>
+    </div>
   </section>
 
   <!-- DONE -->
   <section id="done" class="screen">
-    <div class="done-top">
+    <div class="done-hero">
+      <div class="mascot-slot" data-size="lg" id="doneMascot"></div>
       <div class="stars" id="stars"></div>
-      <h1 id="doneTitle">MashaAllah!</h1>
-      <p class="sub" id="doneSub"></p>
+      <h1 class="title" id="doneTitle">MashaAllah!</h1>
     </div>
-    <div class="missed-box hidden" id="missedBox">
-      <h3>Letters to practise</h3>
-      <div class="missed-grid" id="missedGrid"></div>
+    <div class="stats">
+      <div class="stat"><span class="set-icon green"><svg><use href="#i-target"/></svg></span><div><b id="statFirst">0/0</b><small>first try</small></div></div>
+      <div class="stat"><span class="set-icon sun"><svg><use href="#i-bolt"/></svg></span><div><b id="statSpeed">0s</b><small>per letter</small></div></div>
+    </div>
+    <div class="practice hidden" id="practiceBox">
+      <h3>Let's practise these</h3>
+      <div class="practice-grid" id="practiceGrid"></div>
     </div>
     <div class="done-actions">
-      <button class="big-btn redo" id="doneRedo">
-        <span class="emoji">🔁</span>
-        <span><b>Test just these again</b><small id="doneRedoSub"></small></span>
+      <button class="big-btn coral" id="doneRedo">
+        <span class="btn-icon"><svg><use href="#i-repeat"/></svg></span>
+        <span class="btn-text"><b>Test just these</b><small id="doneRedoSub"></small></span>
+        <span class="btn-go"><svg><use href="#i-left"/></svg></span>
       </button>
-      <button class="big-btn go" id="doneAgain">
-        <span class="emoji">🔀</span>
-        <span><b>Shuffle again</b><small>Same letters, new order</small></span>
+      <button class="big-btn green" id="doneAgain">
+        <span class="btn-icon"><svg><use href="#i-shuffle"/></svg></span>
+        <span class="btn-text"><b>Shuffle again</b><small>Same letters, new order</small></span>
+        <span class="btn-go"><svg><use href="#i-left"/></svg></span>
       </button>
       <button class="link-btn" id="doneHome">Back to start</button>
     </div>
-    <canvas id="confetti" aria-hidden="true"></canvas>
   </section>
 
-  <!-- CONFIRM -->
-  <div class="modal hidden" id="quitModal" role="dialog" aria-modal="true">
+  <canvas id="confetti" aria-hidden="true"></canvas>
+
+  <div class="modal hidden" id="quitModal" role="dialog" aria-modal="true" aria-labelledby="quitTitle">
     <div class="modal-card">
-      <p>Stop this round?</p>
+      <div class="mascot-slot" data-size="sm" id="quitMascot"></div>
+      <p id="quitTitle">Stop this round?</p>
       <div class="modal-actions">
-        <button class="chip" id="quitNo">Keep going</button>
-        <button class="chip danger" id="quitYes">Stop</button>
+        <button class="chip solid" id="quitNo">Keep going</button>
+        <button class="chip" id="quitYes">Stop</button>
       </div>
     </div>
   </div>

@@ -13,6 +13,6 @@ window.QAIDA_PAGES = [
       "Sheen", "Saad", "Zwaad", "Toay", "Zoay", "Ain",
       "Ghain", "Fa", "Qaaf", "Kaaf", "Laam", "Meem",
       "Noon", "Waw", "Ha", "Hamza", "Ya", "Bari Ya"
-    ].map((name, i) => ({ name, img: `letters/${String(i).padStart(2, "0")}.png` }))
+    ].map((name, i) => ({ name, img: `letters/${String(i).padStart(2, "0")}.svg` }))
   }
 ];
