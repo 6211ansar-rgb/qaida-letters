@@ -244,9 +244,9 @@
     card.style.setProperty("--card-edge", edge);
     $("retryTag").classList.toggle("hidden", !item.retry);
     $("peekName").textContent = l.name;
-    $("peekAr").textContent = l.ar || "";
     $("peek").classList.remove("show", "speaking");
-    try { speechSynthesis.cancel(); } catch {}
+    Object.values(clips).forEach((a) => { try { a.pause(); } catch {} });
+    paintPeek();
     const pct = (pos / queue.length) * 100;
     $("progFill").style.width = pct + "%";
     $("rider").style.left = pct + "%";
@@ -340,31 +340,37 @@
   $("missBtn").onclick = () => answer(false);
   $("lateBtn").onclick = () => answer(false);
   $("prevBtn").onclick = back;
-  // the answer: show the name and say it with the phone's Arabic voice
-  let arVoice = null;
-  function pickVoice() {
-    try {
-      const vs = speechSynthesis.getVoices().filter((v) => /^ar/i.test(v.lang));
-      arVoice = vs.find((v) => /SA|Saudi/i.test(v.lang + v.name)) || vs[0] || null;
-    } catch {}
+  // the answer: the teacher's own recording (if there is one) plus the letter name
+  let voiced = new Set();
+  const clips = {};
+  fetch(`audio/index.json?t=${Date.now()}`, { cache: "no-store" })
+    .then((r) => (r.ok ? r.json() : { recorded: [] }))
+    .then((d) => {
+      voiced = new Set(d.recorded || []);
+      voiced.forEach((i) => { const a = new Audio(`audio/${String(i).padStart(2, "0")}.mp3?v=${d.v || ""}`); a.preload = "auto"; clips[i] = a; });
+      if ($("drill").classList.contains("active")) paintPeek();
+    })
+    .catch(() => {});
+
+  function paintPeek() {
+    const has = queue && voiced.has(queue[pos].i);
+    $("peekLabel").textContent = has ? "Hear answer" : "Show answer";
+    $("peekIcon").setAttribute("href", has ? "#i-sound" : "#i-eye");
   }
-  try { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; } catch {}
 
   function sayAnswer() {
-    const l = L[queue[pos].i], p = $("peek");
+    const i = queue[pos].i, p = $("peek");
     p.classList.add("show");
-    clearTimeout(p._t); p._t = setTimeout(() => p.classList.remove("show", "speaking"), 3500);
-    try {
-      speechSynthesis.cancel();
-      if (!arVoice) pickVoice();
-      // Arabic voice says the Arabic name; a phone without one says "Kaaf" etc. in English
-      const u = new SpeechSynthesisUtterance(arVoice ? l.ar : l.name);
-      if (arVoice) { u.voice = arVoice; u.lang = arVoice.lang; }
-      u.rate = 0.75;
-      u.onstart = () => p.classList.add("speaking");
-      u.onend = u.onerror = () => p.classList.remove("speaking");
-      speechSynthesis.speak(u);
-    } catch {}
+    clearTimeout(p._t); p._t = setTimeout(() => p.classList.remove("show", "speaking"), 3000);
+    const a = clips[i];
+    if (a) {
+      try {
+        a.currentTime = 0;
+        a.onplay = () => p.classList.add("speaking");
+        a.onended = a.onpause = () => p.classList.remove("speaking");
+        a.play().catch(() => {});
+      } catch {}
+    }
   }
   $("peek").onclick = sayAnswer;
   $("drillQuit").onclick = () => { clearTimeout(timerId); $("quitModal").classList.remove("hidden"); mood("quitMascot", "think"); };
